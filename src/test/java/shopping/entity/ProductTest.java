@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ProductTest {
     @Test
@@ -16,4 +17,9 @@ class ProductTest {
         assertThat(product.getPrice()).isEqualTo(1500);
     }
 
+    @Test
+    @DisplayName("상품 이름은 최대 15자까지 입력할 수 있다.")
+    void checkProductNameLength(){
+        assertThatThrownBy()
+    }
 }
