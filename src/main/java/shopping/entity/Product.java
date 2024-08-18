@@ -13,28 +13,16 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-    @Column(length = 15)
-    private String name;
+    @Embedded
+    private Name name;
     private int price;
-    private String image;
+    @Embedded
+    private Image image;
 
     @Builder
     public Product(String name, int price, String image) {
-        validateName(name);
-        this.name = name;
+        this.name = new Name(name);
         this.price = price;
-        this.image = image;
+        this.image = new Image(image);
     }
-
-    private void validateName(String name) {
-        if (name == null || name.isEmpty()) {
-            throw new IllegalArgumentException("상품 이름은 필수 입력 사항입니다.");
-        }
-
-        if(name.length() > MAX_NAME_LENGTH){
-            throw new IllegalArgumentException("상품 이름은 최대 15자까지 입력 가능합니다.");
-        }
-    }
-
-
 }
