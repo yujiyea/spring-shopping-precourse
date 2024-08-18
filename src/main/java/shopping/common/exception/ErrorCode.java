@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    PRODUCT_NOT_FOUND(40401, "Product를 찾지 못했습니다.");
+    PRODUCT_NOT_FOUND(40401, "Product를 찾지 못했습니다."),
+    USER_NOT_FOUND(40401, "유저를 찾지 못했습니다.");
 
     private final int code;
     private final String message;
