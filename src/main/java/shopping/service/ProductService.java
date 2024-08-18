@@ -52,4 +52,9 @@ public class ProductService {
 
         return product.toDto();
     }
+
+    public void deleteProduct(Long productId) {
+        final Product product = productRepository.findById(productId).orElseThrow(()-> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+        productRepository.delete(product);
+    }
 }

@@ -6,8 +6,6 @@ import shopping.common.entity.BaseEntity;
 import shopping.model.ProductDto;
 import shopping.model.request.UpdateProductRequest;
 
-import java.util.Objects;
-
 import static org.springframework.util.StringUtils.hasText;
 
 @Entity

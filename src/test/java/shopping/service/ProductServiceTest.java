@@ -3,8 +3,6 @@ package shopping.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -135,5 +133,22 @@ class ProductServiceTest {
 
         assertThatThrownBy(() ->productService.updateProduct(UpdateProductRequest.builder().productId(1L)
                 .productName("kkkkkkkkkkkkkkkkk").build())).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("특정 상품을 삭제한다.")
+    void deleteProduct(){
+        Long productId = 1L;
+        Product product = Product.builder()
+                .name("쿠키")
+                .price(1500)
+                .image("http://cookie.jpg")
+                .build();
+
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
+
+        productService.deleteProduct(productId);
+
+        verify(productRepository, times(1)).delete(product);
     }
 }
