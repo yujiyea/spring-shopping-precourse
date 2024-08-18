@@ -5,7 +5,10 @@ import org.springframework.stereotype.Service;
 import shopping.entity.Product;
 import shopping.model.ProductDto;
 import shopping.model.request.CreateProductRequest;
+import shopping.model.response.ProductListResponse;
 import shopping.repository.ProductRepository;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,5 +25,11 @@ public class ProductService {
         productRepository.save(product);
 
         return product.toDto();
+    }
+
+    public ProductListResponse getAllProducts() {
+        List<Product> products = productRepository.findAll();
+
+        return ProductListResponse.of(products);
     }
 }
