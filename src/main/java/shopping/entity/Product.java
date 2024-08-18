@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import shopping.common.entity.BaseEntity;
 import shopping.model.ProductDto;
+import shopping.model.request.UpdateProductRequest;
+
+import java.util.Objects;
+
+import static org.springframework.util.StringUtils.hasText;
 
 @Entity
 @Getter
@@ -35,5 +40,17 @@ public class Product extends BaseEntity {
                 .price(this.price)
                 .imageUrl(this.image.getImageUrl())
                 .build();
+    }
+
+    public void update(UpdateProductRequest updateProductRequest){
+        if(updateProductRequest.getProductName() != null && hasText(updateProductRequest.getProductName())){
+            this.name = new Name(updateProductRequest.getProductName());
+        }
+        if(updateProductRequest.getPrice() != 0){
+            this.price = updateProductRequest.getPrice();
+        }
+        if(updateProductRequest.getImageUrl() != null && hasText(updateProductRequest.getImageUrl())){
+            this.image = new Image(updateProductRequest.getImageUrl());
+        }
     }
 }

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -13,6 +12,7 @@ import shopping.common.exception.NotFoundException;
 import shopping.entity.Product;
 import shopping.model.ProductDto;
 import shopping.model.request.CreateProductRequest;
+import shopping.model.request.UpdateProductRequest;
 import shopping.model.response.ProductListResponse;
 import shopping.repository.ProductRepository;
 
@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -94,5 +95,45 @@ class ProductServiceTest {
 
         assertThatThrownBy(() ->productService.getProductById(productId)).isInstanceOf(NotFoundException.class);
         verify(productRepository, times(1)).findById(productId);
+    }
+
+    @Test
+    @DisplayName("상품 수정")
+    void updateProduct(){
+        Long productId = 1L;
+        Product product = Product.builder()
+                .name("쿠키")
+                .price(1500)
+                .image("http://cookie.jpg")
+                .build();
+
+        Product updateProduct = Product.builder()
+                .name("쿠키")
+                .price(1800)
+                .image("http://cookie.jpg")
+                .build();
+
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
+        given(productRepository.save(product)).willReturn(updateProduct);
+
+        ProductDto productDto = productService.updateProduct(UpdateProductRequest.builder().productId(1L).price(1800).build());
+
+        assertEquals(productDto.getPrice(), updateProduct.getPrice());
+    }
+
+    @Test
+    @DisplayName("상품 수정 실패")
+    void updateProduct_Fail(){
+        Long productId = 1L;
+        Product product = Product.builder()
+                .name("쿠키")
+                .price(1500)
+                .image("http://cookie.jpg")
+                .build();
+
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
+
+        assertThatThrownBy(() ->productService.updateProduct(UpdateProductRequest.builder().productId(1L)
+                .productName("kkkkkkkkkkkkkkkkk").build())).isInstanceOf(IllegalArgumentException.class);
     }
 }
