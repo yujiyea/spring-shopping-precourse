@@ -1,9 +1,7 @@
 package shopping.model.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import shopping.entity.Product;
 
 import java.util.List;

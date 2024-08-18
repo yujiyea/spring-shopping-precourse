@@ -2,6 +2,8 @@ package shopping.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import shopping.common.exception.ErrorCode;
+import shopping.common.exception.NotFoundException;
 import shopping.entity.Product;
 import shopping.model.ProductDto;
 import shopping.model.request.CreateProductRequest;
@@ -29,7 +31,11 @@ public class ProductService {
 
     public ProductListResponse getAllProducts() {
         List<Product> products = productRepository.findAll();
-
         return ProductListResponse.of(products);
+    }
+
+    public ProductDto getProductById(Long productId) {
+        final Product product = productRepository.findById(productId).orElseThrow(()-> new NotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+        return product.toDto();
     }
 }

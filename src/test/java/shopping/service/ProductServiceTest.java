@@ -3,9 +3,13 @@ package shopping.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import shopping.common.exception.NotFoundException;
 import shopping.entity.Product;
 import shopping.model.ProductDto;
 import shopping.model.request.CreateProductRequest;
@@ -14,8 +18,10 @@ import shopping.repository.ProductRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -44,7 +50,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("모든 상품의 목록을 조회한다.")
-    void getProduct(){
+    void getProductList(){
         List<Product> products = Arrays.asList(new Product("쿠키", 1500, "http://cookie.jpg"),
                 new Product("크로와상", 3500, "http://croissant.jpg"));
 
@@ -54,5 +60,39 @@ class ProductServiceTest {
 
         assertThat(results.getProducts()).isEqualTo(products);
         verify(productRepository, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("특정 상품을 조회한다.")
+    void getProductById(){
+        Long productId = 1L;
+        Product product = Product.builder()
+                .name("쿠키")
+                .price(1500)
+                .image("http://cookie.jpg")
+                .build();
+
+        given(productRepository.findById(productId)).willReturn(Optional.of(product));
+
+        ProductDto result = productService.getProductById(productId);
+
+        assertThat(result.getName()).isEqualTo(product.getName().getName());
+        verify(productRepository, times(1)).findById(productId);
+    }
+
+    @Test
+    @DisplayName("특정 상품 조회 실패")
+    void getProductById_Fail(){
+        Long productId = 1L;
+        Product product = Product.builder()
+                .name("쿠키")
+                .price(1500)
+                .image("http://cookie.jpg")
+                .build();
+
+        given(productRepository.findById(productId)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() ->productService.getProductById(productId)).isInstanceOf(NotFoundException.class);
+        verify(productRepository, times(1)).findById(productId);
     }
 }
