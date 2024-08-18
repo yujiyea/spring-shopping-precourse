@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 @EqualsAndHashCode
 public class Name {
     private static final int MAX_NAME_LENGTH = 15;
-    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9가-힣()\\[\\]+\\-/&_]*$");
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9가-힣()\\s\\[\\]+\\-/&_]*$");
 
     private String name;
 

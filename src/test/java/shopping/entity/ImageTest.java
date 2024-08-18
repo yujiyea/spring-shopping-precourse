@@ -22,6 +22,6 @@ class ImageTest {
     void createImage(String imageUrl){
         Image image = new Image(imageUrl);
 
-        assertThat(image.getImage()).isEqualTo(imageUrl);
+        assertThat(image.getImageUrl()).isEqualTo(imageUrl);
     }
 }
