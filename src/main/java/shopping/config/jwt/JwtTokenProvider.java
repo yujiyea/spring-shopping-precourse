@@ -6,6 +6,10 @@ import io.jsonwebtoken.io.Decoders;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.util.StringUtils;
@@ -13,6 +17,7 @@ import shopping.entity.User;
 
 import java.security.Key;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
@@ -74,6 +79,21 @@ public class JwtTokenProvider {
         }catch (JwtException | IllegalArgumentException e){//추후에 log에 기록남도록 하기
             return false;
         }
+    }
+
+    //access token에 들어있는 정보를 꺼내서 authentication 만들기
+    public Authentication getAuthentication(String token){
+        Claims claims = parseClaims(token);
+        String authId = claims.getSubject();
+
+        Collection<? extends GrantedAuthority> authorities = Arrays.stream(new String[]{claims.get(AUTHORITIES_KEY).toString()})
+                .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+
+        return new UsernamePasswordAuthenticationToken(authId, "", authorities);
+    }
+
+    public String getUserIdFromToken(String token){
+        return parseClaims(token).getSubject();
     }
 
     //jwt 토큰 복호화한 후 정보 추출
